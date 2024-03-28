@@ -1,5 +1,12 @@
 import type { SDC_SDK } from "./sdk.d.ts";
 
+/**
+ * Evaluates the given callback function with the provided arguments and returns a promise that resolves to the result of the evaluation.
+ *
+ * @param {function} callback - The callback function to evaluate.
+ * @param {...any} args - The arguments to pass to the callback function.
+ * @return {Promise<any>} A promise that resolves to the result of the evaluation.
+ */
 export const evaluate = async <ARGS extends any[], RET extends any>(
   callback: (sdk: SDC_SDK, ...args: ARGS) => RET,
   ...args: ARGS
