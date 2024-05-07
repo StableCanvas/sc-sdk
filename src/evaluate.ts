@@ -1,4 +1,4 @@
-import type { SDC_SDK } from "./sdk.d.ts";
+import type { SDC_SDK } from "./types/sdk.js";
 
 /**
  * Evaluates the given callback function with the provided arguments and returns a promise that resolves to the result of the evaluation.
@@ -8,7 +8,7 @@ import type { SDC_SDK } from "./sdk.d.ts";
  * @return {Promise<any>} A promise that resolves to the result of the evaluation.
  */
 export const evaluate = async <ARGS extends any[], RET extends any>(
-  callback: (sdk: SDC_SDK, ...args: ARGS) => RET,
+  callback: (host: SDC_SDK, ...args: ARGS) => RET,
   ...args: ARGS
 ): Promise<Awaited<RET>> => {
   const uid = Math.random().toString(36).substr(2);

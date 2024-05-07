@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SC SDK Demo</title>
+    <style>
+      html {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../dist/main.umd.js"></script>
+    <div id="root">
+      <h1>SC SDK Demo</h1>
+    </div>
+
+    <script>
+      {
+        const sdk = __SC_SDK__;
+        const $root = document.getElementById("root");
+        const createDemoUnit = (title = "", description = "", actions = []) => {
+          const container = document.createElement("fieldset");
+          const legend = document.createElement("legend");
+          const desc = document.createElement("p");
+
+          legend.textContent = title;
+          desc.textContent = description;
+          container.appendChild(legend);
+          container.appendChild(desc);
+
+          actions.forEach((action) => {
+            const button = document.createElement("button");
+            button.textContent = action.title;
+            button.onclick = () =>
+              action.handler({
+                elements: {
+                  root: $root,
+                  container,
+                  legend,
+                  desc,
+                  button,
+                },
+              });
+            container.appendChild(button);
+          });
+
+          $root.appendChild(container);
+        };
+
+        createDemoUnit("utils", "", [
+          {
+            title: "alert",
+            handler: () => {
+              // sdk.evaluate((host) => {
+              //   host.utils.alert("Hello, SC SDK!", "info");
+              // });
+              sdk.env.utils.alert("Hello, SC SDK!", "info");
+            },
+          },
+          {
+            title: "loading",
+            handler: () => {
+              sdk.evaluate((host) => {
+                host.utils.loading({
+                  target_promise: new Promise((resolve) => {
+                    setTimeout(() => {
+                      resolve();
+                    }, 3000);
+                  }),
+                  title: "Loading...",
+                  content: "Please wait...",
+                });
+              });
+            },
+          },
+        ]);
+
+        createDemoUnit("client", "", [
+          {
+            title: "get",
+            handler: async ({ elements: { desc } }) => {
+              const clients = await sdk.evaluate(async (host) => {
+                const ext = await host.extensions.client().instance();
+                return (await ext.get_all_clients()).map((x) => ({
+                  id: x.id,
+                  name: x.name,
+                  url: x.url,
+                  kind: x.kind,
+                }));
+              });
+              desc.textContent = JSON.stringify(clients, null, 2);
+            },
+          },
+        ]);
+
+        createDemoUnit("Canvas", "", [
+          {
+            title: "crate draw area",
+            handler: async ({ elements: { desc } }) => {
+              sdk.evaluate(async (host) => {
+                const editor = (await host.extensions.project().instance())
+                  .editor;
+                await editor.create_area({
+                  type: "DrawArea",
+                  attrs: {
+                    x: 512,
+                    y: 64,
+                    width: 512,
+                    height: 768,
+                  },
+                });
+              });
+            },
+          },
+          {
+            title: "clear",
+            handler: async () => {
+              sdk.evaluate(async (host) => {
+                const editor = (await host.extensions.project().instance())
+                  .editor;
+                editor.get_layer("flag").clear_all();
+              });
+            },
+          },
+        ]);
+      }
+    </script>
+  </body>
+</html>

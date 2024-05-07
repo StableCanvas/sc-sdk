@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 sdk.d.ts
+editor.d.ts
+extension.d.ts

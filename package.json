@@ -1,6 +1,6 @@
 {
   "name": "@stable-canvas/sdk",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "description": "",
   "source": "src/main.ts",
   "main": "dist/main.umd.js",
@@ -20,9 +20,9 @@
   ],
   "scripts": {
     "build-dts": "rollup -c rollup.dts.config.js",
-    "build-js": "microbundle --define process.env.NODE_ENV=production,PKG_VERSION=$npm_package_version",
+    "build-js": "microbundle --define process.env.NODE_ENV=production,PKG_VERSION=$npm_package_version --name __SC_SDK__",
     "build": "pnpm build-js && pnpm build-dts",
-    "watch": "microbundle watch --define process.env.NODE_ENV=development,PKG_VERSION=$npm_package_version --compress false",
+    "watch": "microbundle watch --define process.env.NODE_ENV=development,PKG_VERSION=$npm_package_version --compress false --name __SC_SDK__",
     "dev": "pnpm watch",
     "start": "pnpm build",
     "prepack": "rm -rf dist && pnpm run build",
